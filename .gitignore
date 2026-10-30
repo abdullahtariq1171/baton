@@ -1,0 +1,9 @@
+.DS_Store
+
+.commandcode/
+
+node_modules
+dist/
+
+.baton/
+.env
