@@ -7,6 +7,7 @@ import {
   saveCheckpoint,
   listCheckpoints,
   getCheckpoint,
+  getLatestCheckpoint,
   deleteCheckpoint,
   clearWorkspace,
 } from "../src/db.js";
@@ -117,6 +118,29 @@ describe("clearWorkspace", () => {
 
     expect(clearWorkspace(db)).toBe(2);
     expect(listCheckpoints(db)).toHaveLength(0);
+    db.close();
+  });
+});
+
+describe("getLatestCheckpoint", () => {
+  it("returns null when the workspace is empty", () => {
+    const db = openDb(dbPath);
+    expect(getLatestCheckpoint(db)).toBeNull();
+    db.close();
+  });
+
+  it("returns the newest checkpoint", async () => {
+    const db = openDb(dbPath);
+    saveCheckpoint(db, { task: "first", decisions: [], nextSteps: [], evidence: [] });
+    await new Promise((r) => setTimeout(r, 5));
+    const second = saveCheckpoint(db, {
+      task: "second",
+      decisions: [],
+      nextSteps: [],
+      evidence: [],
+    });
+
+    expect(getLatestCheckpoint(db)?.id).toBe(second.id);
     db.close();
   });
 });

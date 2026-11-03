@@ -106,6 +106,19 @@ export function listCheckpoints(db: DatabaseSync): Checkpoint[] {
   return rows.map(rowToCheckpoint);
 }
 
+export function getLatestCheckpoint(db: DatabaseSync): Checkpoint | null {
+  const row = db
+    .prepare(
+      `SELECT id, task, decisions, next_steps, evidence, created_at
+       FROM checkpoints
+       ORDER BY created_at DESC
+       LIMIT 1`,
+    )
+    .get() as CheckpointRow | undefined;
+
+  return row ? rowToCheckpoint(row) : null;
+}
+
 export function getCheckpoint(db: DatabaseSync, id: string): Checkpoint | null {
   const row = db
     .prepare(
