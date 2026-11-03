@@ -12,6 +12,7 @@ import {
   openDb,
   saveCheckpoint,
 } from "./db.js";
+import { formatContext } from "./context.js";
 
 function collect(value: string, previous: string[]): string[] {
   return [...previous, value];
@@ -92,7 +93,7 @@ program
       console.error(id ? `Checkpoint not found: ${id}` : "No checkpoints yet.");
       process.exit(1);
     }
-    console.log(JSON.stringify(checkpoint, null, 2));
+    console.log(formatContext(checkpoint));
   });
 
 program

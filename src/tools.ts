@@ -5,9 +5,11 @@ import {
   clearWorkspace,
   deleteCheckpoint,
   getCheckpoint,
+  getLatestCheckpoint,
   listCheckpoints,
   saveCheckpoint,
 } from "./db.js";
+import { formatContext } from "./context.js";
 
 function ok(data: unknown) {
   return { content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }] };
@@ -38,6 +40,19 @@ export function registerTools(server: McpServer, db: DatabaseSync): void {
         evidence,
       });
       return ok({ id: checkpoint.id, created_at: checkpoint.createdAt });
+    },
+  );
+
+  server.registerTool(
+    "baton_get_context",
+    {
+      description:
+        "Load the latest checkpoint as a formatted prompt to resume work. Call this when starting a new agent session.",
+      inputSchema: {},
+    },
+    async () => {
+      const checkpoint = getLatestCheckpoint(db);
+      return { content: [{ type: "text" as const, text: formatContext(checkpoint) }] };
     },
   );
 
