@@ -1,7 +1,7 @@
 import type { Checkpoint } from "./types.js";
 
 function bullets(items: string[]): string[] {
-  if (items.length === 0) return ["- (none)"];
+  if (items.length === 0) return ["_None recorded._"];
   return items.map((item) => `- ${item}`);
 }
 

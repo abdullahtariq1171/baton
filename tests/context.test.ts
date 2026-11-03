@@ -27,7 +27,7 @@ describe("formatContext", () => {
 
   it("renders placeholders for empty lists", () => {
     const out = formatContext({ ...checkpoint, decisions: [], nextSteps: [], evidence: [] });
-    expect(out).toContain("- (none)");
+    expect(out).toContain("_None recorded._");
   });
 
   it("returns a friendly message for a null checkpoint", () => {
