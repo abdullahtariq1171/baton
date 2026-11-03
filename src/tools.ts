@@ -86,10 +86,18 @@ export function registerTools(server: McpServer, db: DatabaseSync): void {
   server.registerTool(
     "baton_clear_workspace",
     {
-      description: "Delete all checkpoints. This cannot be undone.",
-      inputSchema: {},
+      description: "Delete ALL checkpoints. This cannot be undone.",
+      inputSchema: {
+        confirm: z
+          .boolean()
+          .default(false)
+          .describe("Must be true to proceed. Confirms you want to delete everything."),
+      },
     },
-    async () => {
+    async ({ confirm }) => {
+      if (!confirm) {
+        return fail("Refusing to clear the workspace. Call again with confirm: true.");
+      }
       const removed = clearWorkspace(db);
       return ok({ removed });
     },
