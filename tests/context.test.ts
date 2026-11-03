@@ -22,6 +22,7 @@ describe("formatContext", () => {
     expect(out).toContain("- Add refresh tokens");
     expect(out).toContain("## Evidence");
     expect(out).toContain("- src/auth.ts");
+    expect(out).toContain("Saved: 2026-01-01T00:00:00.000Z");
   });
 
   it("renders placeholders for empty lists", () => {

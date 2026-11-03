@@ -30,5 +30,8 @@ export function formatContext(checkpoint: Checkpoint | null): string {
   lines.push("## Evidence");
   lines.push(...bullets(checkpoint.evidence));
 
+  lines.push("");
+  lines.push(`Saved: ${checkpoint.createdAt}`);
+
   return lines.join("\n");
 }
