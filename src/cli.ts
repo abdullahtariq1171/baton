@@ -1,6 +1,6 @@
 #!/usr/bin/env -S node --disable-warning=ExperimentalWarning
 import { Command } from "commander";
-import { existsSync, mkdirSync } from "node:fs";
+import { appendFileSync, existsSync, mkdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
   clearWorkspace,
@@ -27,6 +27,16 @@ function requireDb() {
   return openDb(dbPath);
 }
 
+function ensureGitignored(projectDir: string): boolean {
+  const gi = join(projectDir, ".gitignore");
+  const line = ".baton/";
+  const existing = existsSync(gi) ? readFileSync(gi, "utf8") : "";
+  const already = existing.split(/\r?\n/).some((l) => l.trim() === line);
+  if (already) return false;
+  appendFileSync(gi, `${existing && !existing.endsWith("\n") ? "\n" : ""}${line}\n`);
+  return true;
+}
+
 const program = new Command();
 
 program.name("baton").description("Shared memory for AI agents").version("0.1.0");
@@ -42,6 +52,9 @@ program
     db.close();
 
     console.log(`Initialized Baton workspace at ${batonDir}`);
+    if (ensureGitignored(process.cwd())) {
+      console.log('Added ".baton/" to .gitignore');
+    }
   });
 
 program
